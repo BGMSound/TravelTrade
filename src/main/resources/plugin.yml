@@ -1,0 +1,6 @@
+name: TravelTrade
+version: '${project.version}'
+main: kr.msleague.traveltrade.TravelTrade
+api-version: 1.17
+commands:
+  거래:
