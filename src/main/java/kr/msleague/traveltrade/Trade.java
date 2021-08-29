@@ -4,6 +4,7 @@ import kr.msleague.bgmlib.WarningMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.UUID;
@@ -38,6 +39,47 @@ public class Trade {
 
     public Player getTargetPlayer() {
         return Bukkit.getPlayer(target);
+    }
+
+    public static Trade getTrade(Player player) {
+        Trade var = null;
+        for(Trade trade : TravelTrade.tradeSet) {
+            if(trade.getTarget().equals(player.getUniqueId()) || trade.getSender().equals(player.getUniqueId())) {
+                var = trade;
+                break;
+            }
+        }
+        return var;
+    }
+    public static void getTradeItem(Inventory inv, Player player, boolean isLeftInv) {
+        for (Integer slot : Cons.canClick) {
+            if (!isLeftInv) slot += 4;
+            ItemStack item = inv.getItem(slot);
+            if(item == null) continue;
+            if(!item.isSimilar(Cons.glass)) {
+                player.getInventory().addItem(item);
+            }
+        }
+    }
+    public static Trade getTradeByTarget(Player player) {
+        Trade var = null;
+        for(Trade trade : TravelTrade.tradeSet) {
+            if(trade.getTarget().equals(player.getUniqueId())) {
+                var = trade;
+                break;
+            }
+        }
+        return var;
+    }
+    public static Trade getTradeBySender(Player player) {
+        Trade var = null;
+        for(Trade trade : TravelTrade.tradeSet) {
+            if(trade.getSender().equals(player.getUniqueId())) {
+                var = trade;
+                break;
+            }
+        }
+        return var;
     }
 
     public void setSenderInv(Inventory senderInv) {

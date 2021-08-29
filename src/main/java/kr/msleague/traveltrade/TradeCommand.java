@@ -11,7 +11,9 @@ import org.bukkit.plugin.Plugin;
 import java.util.UUID;
 
 public class TradeCommand implements CommandExecutor {
-
+    public boolean isClose(Player player1, Player player2) {
+        return !(player1.getLocation().distance(player2.getLocation()) > 5);
+    }
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = (Player) sender;
@@ -49,32 +51,32 @@ public class TradeCommand implements CommandExecutor {
                     return false;
                 }
             }
+            if(!isClose(player, target)) {
+                WarningMessage.sendWarningMsg(player, "해당 플레이어와의 거리가 너무 멉니다! (5칸 이하)");
+                return false;
+            }
             player.sendMessage("거래 신청을 보냈습니다");
             target.sendMessage(player.getName()+"님에게 거래 신청을 받았습니다. [/거래 수락/거절]");
             Trade trade = new Trade(player, target);
             trade.tradeInvite();
         }
         if(args[0].equals("거절") || args[0].equals("수락")) {
-            Trade var = null;
-            for(Trade trade : TravelTrade.tradeSet) {
-                if(trade.getTarget().equals(playerID)) {
-                    var = trade;
-                    break;
-                }
-            }
+            Trade var = Trade.getTradeByTarget(player);
             if(var ==null) {
                 WarningMessage.sendWarningMsg(player, "당신에게 온 거래 신청이 없습니다.");
                 return false;
             }
             if(args[0].equals("거절")) var.inviteDeny();
-            if(args[0].equals("수락")) var.inviteAccept();
+            Player sendPlayer = var.getSenderPlayer();
+            if(args[0].equals("수락")) {
+                if(!isClose(player, sendPlayer)) {
+                    WarningMessage.sendWarningMsg(player,"해당 플레이어와의 거리가 너무 멉니다! (5칸 이하)");
+                    return false;
+                }
+                var.inviteAccept();
+            }
         }
 
-
-        if(args[0].equals("테스트")) {
-            Trade trade = new Trade(player, player);
-            TradeGui.openGUI(trade, player);
-        }
         return false;
 
     }
