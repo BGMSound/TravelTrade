@@ -1,6 +1,9 @@
 name: TravelTrade
 version: '${project.version}'
+author: BGMSound
+description: TravelRPG Trading Plugin
 main: kr.msleague.traveltrade.TravelTrade
-api-version: 1.17
+api-version: 1.12.2
 commands:
   거래:
+    description: Main command of TravelTrade
